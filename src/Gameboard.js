@@ -1,23 +1,26 @@
-const Ship = require('./ship.js');
+import Ship from './Ship.js';
 
-let grid = [];
-for(let i = 0; i < 10; i++)
-{
-    grid.push([]);
-    for(let j = 0; j < 10; j++)
-    {
-        // grid[i].push(j+(i*10));
-        grid[i].push(null);
-    }
-}
-
-class gameboard
+class Gameboard
 {
     constructor()
     {
-        this.board = grid;
+        this.board = this.buildGrid();
         this.attacks = [];
         this.misses = [];
+    }
+
+    buildGrid()
+    {
+        let grid = [];
+        for(let i = 0; i < 10; i++)
+        {
+            grid.push([]);
+            for(let j = 0; j < 10; j++)
+            {
+                grid[i].push(null);
+            }
+        }
+        return grid;
     }
 
     placeShip(startCoord, vertical, length)
@@ -117,7 +120,7 @@ class gameboard
         {
             if(this.attacks[i][0] == coord[0] && this.attacks[i][1] == coord[1])
             {
-                return;
+                return 'alreadyHit';
             }
         }
 
@@ -125,18 +128,21 @@ class gameboard
         if(this.board[coord[0]][coord[1]] instanceof Ship)
         {
             this.board[coord[0]][coord[1]].hit();
+            if(this.allSunk())
+            {
+                console.log('All ships sunk!');
+            }
+            return true;
         }
         else
         {
             this.misses.push(coord);
-            console.log('you missed!');
+            return false;
         }
-        // if miss
     }
 
     allSunk()
     {
-        // if all ships sunk return true, else false
         for(let i = 0; i < this.board.length; i++)
         {
             for(let j = 0; j < this.board.length; j++)
@@ -151,13 +157,4 @@ class gameboard
     }
 }
 
-const gb = new gameboard();
-// gb.placeShip([6,5], true, 3);
-// gb.placeShip([1,1], false, 5);
-gb.placeShip([0,0], false, 3);
-gb.recieveAttack([0,0]);
-gb.recieveAttack([0,0]);
-gb.recieveAttack([0,1]);
-gb.recieveAttack([0,2]);
-console.log(gb.board);
-console.log(gb.allSunk());
+export default Gameboard;
