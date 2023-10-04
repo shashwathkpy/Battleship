@@ -17,6 +17,18 @@ body
     height: 50px;
 }
 
+.placementTile
+{
+    background-color: gray;
+    cursor:pointer;
+}
+
+/* .placementTile:hover
+{
+    background-color: gray;
+    cursor: crosshair;
+} */
+
 .computerTile:hover
 {
     background-color: yellow;
@@ -24,6 +36,11 @@ body
 }
 
 .ship
+{
+    background-color: orange;
+}
+
+.playerShip
 {
     background-color: green;
 }

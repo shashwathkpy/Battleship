@@ -39,7 +39,7 @@ class Gameboard
                     if(this.board[row+i][col])
                     {
                         shipDetected = true;
-                        console.log('SHIP DETECTED!');
+                        return false;
                     }
                 }
                 if(!shipDetected)
@@ -49,11 +49,12 @@ class Gameboard
                         this.getAdjacent(row+i, col);
                         this.board[row+i][col] = ship;
                     }
+                    return true;
                 }
             }
             else
             {
-                console.log('ship out of bounds');
+                return false;
             }
         }
         else
@@ -65,7 +66,7 @@ class Gameboard
                     if(this.board[row][col+i])
                     {
                         shipDetected = true;
-                        console.log('SHIP DETECTED!');
+                        return false;
                     }
                 }
                 if(!shipDetected)
@@ -75,11 +76,12 @@ class Gameboard
                         this.getAdjacent(row, col+i);
                         this.board[row][col+i] = ship;
                     }
+                    return true;
                 }
             }
             else
             {
-                console.log('ship out of bounds');
+                return false;
             }
         }
     }
