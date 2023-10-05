@@ -157,6 +157,7 @@ function battleShip()
                     tile.onclick = function ()
                     {
                         const playerAttack = player.attack([i,j]);
+                        tile.style.cursor = 'default';
                         if(playerAttack == 'alreadyHit')
                         {
                             return;
@@ -166,32 +167,37 @@ function battleShip()
                             this.style.backgroundColor = 'red';
                         }
                         else
-                        {
+                        {    
                             this.style.backgroundColor = 'lightblue';
-                        }
-                        tile.style.cursor = 'default';
-                        const playerTiles = document.querySelectorAll('.playerTile');
-                        let computerHit = computer.randomAttack();
-                        while(computerHit == 'alreadyHit')
-                        {
-                            computerHit = computer.randomAttack();
-                        }
-                        playerTiles.forEach(tile => {
-                            const idArray = tile.id.split(',');
-                            const coord = [idArray[0],idArray[1]];
-                            if(coord == computer.attackedCoord.toString())
+                            const playerTiles = document.querySelectorAll('.playerTile');
+                            let previousHit = true;
+                            while(previousHit)
                             {
-                                if(computerHit)
+                                let computerHit = computer.randomAttack();
+                                while(computerHit == 'alreadyHit')
                                 {
-                                    tile.style.backgroundColor = 'red';
-                                    computerHit = false;
+                                    computerHit = computer.randomAttack();
                                 }
-                                else
-                                {
-                                    tile.style.backgroundColor = 'lightblue';
-                                }
+                                playerTiles.forEach(tile => {
+                                    const idArray = tile.id.split(',');
+                                    const coord = [idArray[0],idArray[1]];
+                                    if(coord == computer.attackedCoord.toString())
+                                    {
+                                        if(computerHit)
+                                        {
+                                            tile.style.backgroundColor = 'red';
+                                        }
+                                        else
+                                        {
+                                            tile.style.backgroundColor = 'lightblue';
+                                            previousHit = false;
+                                        }
+                                    }
+                                });
                             }
-                        });
+                        }
+                        
+                        
                         if(playerBoard.allSunk() || computerBoard.allSunk())
                         {
                             console.log('Game Over');
