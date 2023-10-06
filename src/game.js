@@ -40,6 +40,8 @@ function battleShip()
         console.log(vertical);
     }
 
+    const instruction = document.querySelector('#instruction');
+    instruction.textContent = 'Place your ships';
     for(let i = 0; i < 10; i++)
     {
         for(let j = 0; j < 10; j++)
@@ -47,7 +49,6 @@ function battleShip()
             const tile = document.createElement('div');
             tile.classList.add('tile');
             tile.id = `${i},${j}`;
-
             tile.onclick = function ()
             {
                 const idArray = this.id.split(',');
@@ -78,8 +79,10 @@ function battleShip()
                         tile.onmouseleave = null;
                     });
                     body.removeChild(playerBoardDiv);
+                    body.removeChild(rotateBtn);
                     setupBoard(playerBoard);
                     setupBoard(computerBoard);
+                    instruction.textContent = 'Shoot an enemy tile.'
                 }
             }
 
@@ -141,7 +144,7 @@ function battleShip()
                 tile.classList.add('tile');
                 tile.id = `${i},${j},${boardDiv.id}`;
                 // tile.textContent = playerBoard.board[i][j];
-                // tile.textContent = `${i},${j}`;
+                tile.textContent = `${i},${j}`;
                 if(gb.board[i][j] instanceof Ship)
                 {
                     tile.classList.add('ship');
@@ -156,6 +159,7 @@ function battleShip()
 
                     tile.onclick = function ()
                     {
+                        console.log(computer.possibleAttacks);
                         const playerAttack = player.attack([i,j]);
                         tile.style.cursor = 'default';
                         if(playerAttack == 'alreadyHit')
@@ -165,15 +169,20 @@ function battleShip()
                         if(playerAttack)
                         {
                             this.style.backgroundColor = 'red';
+                            instruction.textContent = 'You hit an enemy ship, shoot again!';
                         }
                         else
-                        {    
+                        {   
+                            instruction.textContent = 'Shoot an enemy tile.'
                             this.style.backgroundColor = 'lightblue';
                             const playerTiles = document.querySelectorAll('.playerTile');
                             let previousHit = true;
+                            let smartHit = false;
                             while(previousHit)
                             {
                                 let computerHit = computer.randomAttack();
+                                if(smartHit)
+                                    computerHit = computer.smartAttack(previousHit);
                                 while(computerHit == 'alreadyHit')
                                 {
                                     computerHit = computer.randomAttack();
@@ -186,6 +195,8 @@ function battleShip()
                                         if(computerHit)
                                         {
                                             tile.style.backgroundColor = 'red';
+                                            previousHit = coord;
+                                            smartHit = true;
                                         }
                                         else
                                         {
@@ -200,7 +211,10 @@ function battleShip()
                         
                         if(playerBoard.allSunk() || computerBoard.allSunk())
                         {
-                            console.log('Game Over');
+                            if(computerBoard.allSunk())
+                                instruction.textContent = 'Congratulations, you sank all the enemy ships!';
+                            else
+                                instruction.textContent = 'All your ships have sank, we need a better strategy.';
                             const computerTiles = document.querySelectorAll('.computerTile');
                             computerTiles.forEach(tile => {
                                 tile.onclick = null;
@@ -221,7 +235,14 @@ function battleShip()
 battleShip();
 
 
-// computer smart attacks
-// has to be able to track a single ship, new ship parameter needed, id or name
-// if hit, store ship name, hit adjacent tiles till that ship is sunk
-// when ship is sunk make a random move again till next ship hit
+// computer attack new strat
+// create a stack in random order of all possible attacks
+// pop from stack to use an attack
+// if hit add adjacent attacks to stack
+// attack adjacent till one hits
+// when an adjacent hits, follow the pattern of direction till ship sinks or miss
+// remove wrong-direction adjacents
+// if miss go to the initial hit and go the opposite direction till ship sinks
+// pop already used attacks without using them again
+// hit the next random attack
+// repeat this till either player or computer wins

@@ -95,25 +95,59 @@ class Gameboard
     
     getAdjacent(i, j) 
     {
-        let n = this.board.length;
-        let m = this.board[0].length;
-    
+        let n = 10;
+        let m = 10;
+        let smartAttacks = [];
+        
+        // left
+        if(this.validPos(i, j - 1, n, m))
+        {
+            smartAttacks.push([i, j-1]);
+            if(!(this.board[i][j - 1] instanceof Ship))
+                this.board[i][j - 1] = 1;
+        }
+
+        // top left
         if(this.validPos(i - 1, j - 1, n, m))
             this.board[i - 1][j - 1] = 1;
-        if(this.validPos(i - 1, j, n, m) && !(this.board[i - 1][j] instanceof Ship))
-            this.board[i - 1][j] = 1;
+
+        // top
+        if(this.validPos(i - 1, j, n, m))
+        {
+            smartAttacks.push([i-1, j]);
+            if(!(this.board[i - 1][j] instanceof Ship))
+                this.board[i - 1][j] = 1;
+        }
+
+        // top right
         if(this.validPos(i - 1, j + 1, n, m))
             this.board[i - 1][j + 1] = 1;
-        if(this.validPos(i, j - 1, n, m) && !(this.board[i][j - 1] instanceof Ship))
-            this.board[i][j - 1] = 1;
-        if(this.validPos(i, j + 1, n, m) && !(this.board[i][j + 1] instanceof Ship))
-            this.board[i][j + 1] = 1;
-        if(this.validPos(i + 1, j - 1, n, m))
-            this.board[i + 1][j - 1] = 1;
-        if(this.validPos(i + 1, j, n, m) && !(this.board[i + 1][j] instanceof Ship))
-            this.board[i + 1][j] = 1;
+
+        // right
+        if(this.validPos(i, j + 1, n, m)) 
+        {
+            smartAttacks.push([i, j+1]);
+            if(!(this.board[i][j + 1] instanceof Ship))
+                this.board[i][j + 1] = 1;
+        }
+
+        // bottom right
         if(this.validPos(i + 1, j + 1, n, m))
             this.board[i + 1][j + 1] = 1;
+
+        // bottom
+        if(this.validPos(i + 1, j, n, m))
+        {
+            smartAttacks.push([i+1,j]);
+            if(!(this.board[i + 1][j] instanceof Ship))
+                this.board[i + 1][j] = 1;
+        }
+
+        // bottom left
+        if(this.validPos(i + 1, j - 1, n, m))
+            this.board[i + 1][j - 1] = 1;
+
+        return smartAttacks;
     }
 
     recieveAttack(coord)
@@ -130,10 +164,6 @@ class Gameboard
         if(this.board[coord[0]][coord[1]] instanceof Ship)
         {
             this.board[coord[0]][coord[1]].hit();
-            if(this.allSunk())
-            {
-                console.log('All ships sunk!');
-            }
             return true;
         }
         else
