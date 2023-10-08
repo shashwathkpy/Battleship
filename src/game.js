@@ -135,6 +135,8 @@ function battleShip()
         boardDiv.classList.add('board');
         const body = document.querySelector('body');
         body.appendChild(boardDiv);
+        let previousHit = null;
+        let shipArray = [];
 
         for(let i = 0; i < gb.board.length; i++)
         {
@@ -143,7 +145,7 @@ function battleShip()
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
                 tile.id = `${i},${j},${boardDiv.id}`;
-                // tile.textContent = playerBoard.board[i][j];
+                // tile.textContent = gb.board[i][j];
                 tile.textContent = `${i},${j}`;
                 if(gb.board[i][j] instanceof Ship)
                 {
@@ -153,13 +155,13 @@ function battleShip()
                         tile.classList.add('playerShip');
                     }
                 }
+                
                 if(boardDiv.id == '2')
                 {
                     tile.classList.add('computerTile');
 
                     tile.onclick = function ()
                     {
-                        console.log(computer.possibleAttacks);
                         const playerAttack = player.attack([i,j]);
                         tile.style.cursor = 'default';
                         if(playerAttack == 'alreadyHit')
@@ -176,32 +178,107 @@ function battleShip()
                             instruction.textContent = 'Shoot an enemy tile.'
                             this.style.backgroundColor = 'lightblue';
                             const playerTiles = document.querySelectorAll('.playerTile');
-                            let previousHit = true;
+                            let lastShot = true;
                             let smartHit = false;
-                            while(previousHit)
+                            while(lastShot)
                             {
-                                let computerHit = computer.randomAttack();
-                                if(smartHit)
-                                    computerHit = computer.smartAttack(previousHit);
+                                let shot = computer.possibleAttacks.pop();
+                                // console.log(computer.possibleAttacks);
+                                let computerHit = computer.attack(shot);
                                 while(computerHit == 'alreadyHit')
                                 {
-                                    computerHit = computer.randomAttack();
+                                    computerHit = computer.attack(computer.possibleAttacks.pop());
                                 }
                                 playerTiles.forEach(tile => {
                                     const idArray = tile.id.split(',');
-                                    const coord = [idArray[0],idArray[1]];
+                                    const coord = [parseInt(idArray[0]), parseInt(idArray[1])];
+                                    for(let i = 0; i < playerBoard.misses.length; i++)
+                                    {
+                                        
+                                        if(coord == playerBoard.misses[i])
+                                        {
+                                            console.log('yoo ' +coord + ' '  +playerBoard.misses[i]);
+                                            tile.style.backgroundColor = 'lightblue';
+                                        }
+                                    }
                                     if(coord == computer.attackedCoord.toString())
                                     {
                                         if(computerHit)
                                         {
                                             tile.style.backgroundColor = 'red';
+                                            let currentShip = playerBoard.board[idArray[0]][idArray[1]];
+                                            console.log(currentShip);
+                                            shipArray.push([coord[0], coord[1]]);
+                                            let direction = null;
+
+                                            if(currentShip.hitCount > 1 && !currentShip.sunk)
+                                            {
+                                                console.log(coord + ', ' + previousHit);
+
+                                                if(previousHit[0] != coord[0])
+                                                {
+                                                    direction = 'vertical';
+                                                    let toBePopped = computer.possibleAttacks.pop();
+                                                    if(toBePopped[1] == coord[1])
+                                                    {
+                                                        computer.possibleAttacks.push(toBePopped);
+                                                    }
+                                                }
+
+                                                if(previousHit[1] != coord[1])
+                                                {
+                                                    direction = 'horizontal';
+                                                    let toBePopped = computer.possibleAttacks.pop();
+                                                    if(toBePopped[0] == coord[0])
+                                                    {
+                                                        computer.possibleAttacks.push(toBePopped);
+                                                    }
+                                                }
+                                            }
+
                                             previousHit = coord;
                                             smartHit = true;
+                                            let addedAttacks = computer.smartAttack(previousHit, direction);
+                                            if(currentShip.sunk)
+                                            {
+                                                for(let i = 0; i < addedAttacks; i++)
+                                                {
+                                                    computer.possibleAttacks.pop();
+                                                }
+                                                for(let i = 0; i < shipArray.length; i++)
+                                                {
+                                                    console.log("Ship Array:" + shipArray[i][0]);
+                                                    playerBoard.justSunk = true;
+                                                    playerBoard.getAdjacent(shipArray[i][0], shipArray[i][1]);
+                                                    // console.log(ship);
+                                                }
+                                                // const misses = playerBoard.misses;
+                                                // console.log('misses: ' + playerBoard.misses)
+                                                // for(let i = 0; i < misses.length; i++)
+                                                // {
+                                                    // computer.attack(misses[i]);
+                                                    // const playerTilesforMisses = document.querySelectorAll('.playerTile');
+                                                    // playerTilesforMisses.forEach(tile => {
+                                                    //     const iDs = tile.id.split(',');
+                                                    //     const slot = [parseInt(iDs[0]), parseInt(iDs[1])];
+                                                    //     if(slot == computer.attackedCoord.toString())
+                                                    //     {
+                                                    //         if(ti)
+                                                    //         tile.style.backgroundColor = 'lightblue';
+                                                    //     }
+                                                    // });
+                                                   
+
+                                                // }
+                                                // let invalidAttacks = playerBoard.getAdjacent();
+                                                // console.log(playerBoard.board);
+                                                shipArray = [];
+                                            }
                                         }
                                         else
                                         {
                                             tile.style.backgroundColor = 'lightblue';
-                                            previousHit = false;
+                                            lastShot = false;
                                         }
                                     }
                                 });
@@ -239,10 +316,14 @@ battleShip();
 // create a stack in random order of all possible attacks
 // pop from stack to use an attack
 // if hit add adjacent attacks to stack
+
 // attack adjacent till one hits
 // when an adjacent hits, follow the pattern of direction till ship sinks or miss
+
+// if next hit and ship not sunk then store direction, and push three in line(unless its the border), pop those till ship sinks or misses
 // remove wrong-direction adjacents
 // if miss go to the initial hit and go the opposite direction till ship sinks
+
 // pop already used attacks without using them again
 // hit the next random attack
 // repeat this till either player or computer wins

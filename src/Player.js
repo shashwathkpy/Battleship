@@ -30,26 +30,64 @@ class Player
 
     attack(coord)
     {
-        return this.enemyBoard.recieveAttack(coord);
-    }
-
-    randomAttack()
-    {
-        const coord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
         this.attackedCoord = coord;
         return this.enemyBoard.recieveAttack(coord);
     }
 
-    smartAttack(prevAttack)
+    // randomAttack(coord)
+    // {
+    //     // const coord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    //     this.attackedCoord = coord;
+    //     return this.enemyBoard.recieveAttack(coord);
+    // }
+
+    smartAttack(prevAttack, direction)
     {
         // computer smart attacks
         // has to be able to track a single ship, new ship parameter needed, id or name
         // if hit, store ship name, hit adjacent tiles till that ship is sunk
         // when ship is sunk make a random move again till next ship hit
 
-        let adjacentAttacks = this.enemyBoard.getAdjacent(parseInt(prevAttack[0]), parseInt(prevAttack[1]));
-        console.log('coord: ' + prevAttack + ' adjacent attacks: ' + adjacentAttacks[0]);
-        return adjacentAttacks;
+        let adjacentAttacks = this.enemyBoard.getAdjacent(prevAttack[0], prevAttack[1]);
+        let smartAttacks = [];
+        if(direction == 'horizontal')
+        {
+            for(let i = 0; i < adjacentAttacks.length; i++)
+            {
+                if(adjacentAttacks[i][0] == prevAttack[0])
+                {
+                    smartAttacks.push(adjacentAttacks[i]);
+                }
+            }
+            for(let i = 0; i < smartAttacks.length; i++)
+            {
+                this.possibleAttacks.push(smartAttacks[i]);
+            }
+            return smartAttacks.length;
+        }
+        if(direction == 'vertical')
+        {
+            for(let i = 0; i < adjacentAttacks.length; i++)
+            {
+                if(adjacentAttacks[i][1] == prevAttack[1])
+                {
+                    smartAttacks.push(adjacentAttacks[i]);
+                }
+            }
+            for(let i = 0; i < smartAttacks.length; i++)
+            {
+                this.possibleAttacks.push(smartAttacks[i]);
+            }
+            return smartAttacks.length;
+        }
+        else
+        {
+            for(let i = 0; i < adjacentAttacks.length; i++)
+            {
+                this.possibleAttacks.push(adjacentAttacks[i]);
+            }
+            return adjacentAttacks.length;
+        }
 
     }
 

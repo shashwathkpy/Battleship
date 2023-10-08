@@ -7,6 +7,7 @@ class Gameboard
         this.board = this.buildGrid();
         this.attacks = [];
         this.misses = [];
+        this.justSunk = false;
     }
 
     buildGrid()
@@ -102,38 +103,55 @@ class Gameboard
         // left
         if(this.validPos(i, j - 1, n, m))
         {
-            smartAttacks.push([i, j-1]);
+            smartAttacks.push([i, j - 1]);
             if(!(this.board[i][j - 1] instanceof Ship))
                 this.board[i][j - 1] = 1;
+            if(this.justSunk)
+                this.misses.push([i, j - 1]);
         }
 
         // top left
         if(this.validPos(i - 1, j - 1, n, m))
+        {
             this.board[i - 1][j - 1] = 1;
+            if(this.justSunk)
+                this.misses.push([i - 1, j - 1]);
+        }
 
         // top
         if(this.validPos(i - 1, j, n, m))
         {
-            smartAttacks.push([i-1, j]);
+            smartAttacks.push([i - 1, j]);
             if(!(this.board[i - 1][j] instanceof Ship))
                 this.board[i - 1][j] = 1;
+            if(this.justSunk)
+                this.misses.push([i - 1, j]);
         }
 
         // top right
         if(this.validPos(i - 1, j + 1, n, m))
+        {
             this.board[i - 1][j + 1] = 1;
-
+            if(this.justSunk)
+                this.misses.push([i - 1, j + 1]);
+        }
         // right
         if(this.validPos(i, j + 1, n, m)) 
         {
-            smartAttacks.push([i, j+1]);
+            smartAttacks.push([i, j + 1]);
             if(!(this.board[i][j + 1] instanceof Ship))
                 this.board[i][j + 1] = 1;
+            if(this.justSunk)
+                this.misses.push([i, j + 1]);
         }
 
         // bottom right
         if(this.validPos(i + 1, j + 1, n, m))
+        {
             this.board[i + 1][j + 1] = 1;
+            if(this.justSunk)
+                this.misses.push([i + 1, j + 1]);
+        }
 
         // bottom
         if(this.validPos(i + 1, j, n, m))
@@ -141,12 +159,19 @@ class Gameboard
             smartAttacks.push([i+1,j]);
             if(!(this.board[i + 1][j] instanceof Ship))
                 this.board[i + 1][j] = 1;
+            if(this.justSunk)
+                this.misses.push([i + 1, j]);
         }
 
         // bottom left
         if(this.validPos(i + 1, j - 1, n, m))
+        {
             this.board[i + 1][j - 1] = 1;
+            if(this.justSunk)
+                this.misses.push([i + 1, j - 1]);
+        }
 
+        this.justSunk = false;
         return smartAttacks;
     }
 
@@ -168,7 +193,7 @@ class Gameboard
         }
         else
         {
-            this.misses.push(coord);
+            // this.misses.push(coord);
             return false;
         }
     }
