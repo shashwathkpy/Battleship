@@ -32,9 +32,10 @@ function battleShip()
     let shipSizes = [5,4,3,3,2,0];
     let shipLength = shipSizes.shift();
     const rotateBtn = document.createElement('button');
+    const content = document.querySelector('#content');
     rotateBtn.textContent = 'ROTATE';
     rotateBtn.id = 'rotateBtn';
-    body.appendChild(rotateBtn);
+    content.appendChild(rotateBtn);
 
     let vertical = false;
     rotateBtn.onclick = function ()
@@ -82,7 +83,7 @@ function battleShip()
                         tile.onmouseleave = null;
                     });
                     boardArea.removeChild(playerBoardDiv);
-                    body.removeChild(rotateBtn);
+                    content.removeChild(rotateBtn);
                     setupBoard(playerBoard);
                     setupBoard(computerBoard);
                     instruction.textContent = 'Shoot an enemy tile.'
@@ -279,11 +280,11 @@ function battleShip()
                             });
                             const restartBtn = document.createElement('button');
                             restartBtn.textContent = 'RESTART';
-                            body.appendChild(restartBtn);
+                            content.appendChild(restartBtn);
                             restartBtn.onclick = function ()
                             {
                                 restart();
-                                body.removeChild(restartBtn);
+                                content.removeChild(restartBtn);
                             }
                         }
                     };
