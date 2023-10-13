@@ -1,28 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
 
 
+:root 
+{
+    --ocean: #1b4965;
+    --shore: #62B6CB;
+    --puddle: #BEE9E8;
+}
+
 body
 {
     height: 100vh;
     margin: 0;
     text-align: center;
     font-family: 'Pixelify Sans', sans-serif;
-    background-color: lightgreen;
+    background-color: var(--shore);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    background-image: url('./images/ship.svg');
+    background-repeat: no-repeat;
+    background-position: 50% 20%;
+    background-size: 25%;
 }
 
 #header
 {
-    background-color: darkgreen;
+    background-color: var(--ocean);
     width: 100%;
 }
 
 #footer
 {
-    background-color: darkgreen;
+    background-color: var(--ocean);
     width: 100%; 
     height: 8%;
     display: flex;
@@ -37,6 +48,7 @@ body
     align-items: center;
     font-size: 40px;
     text-decoration: none;
+    color: var(--shore);
 }
 
 #githubIcon
@@ -47,13 +59,13 @@ body
 h1
 {
     font-size: 75px;
-    color: lightgreen;
+    color: var(--shore);
 }
 
 h2
 {
     font-size: 40px;
-    color: darkgreen;
+    color: var(--ocean);
 }
 
 button
@@ -62,6 +74,13 @@ button
     font-size: 25px;
     padding: 10px;
     border-radius: 20px;
+    background-color: var(--ocean);
+    color: var(--shore);
+}
+
+button:hover
+{
+    color: var(--puddle);
 }
 
 #boardArea
@@ -80,7 +99,7 @@ button
 
 .tile
 {
-    border: solid 1px black;
+    /* border: solid 1px black; */
     height: 50px;
     background-color: white;
 }
@@ -93,7 +112,7 @@ button
 
 .shootHover
 {
-    background-color: yellow;
+    background-color: gray;
     cursor: crosshair;
 }
 
@@ -104,15 +123,15 @@ button
 
 .playerShip
 {
-    background-color: green;
+    background-color: var(--ocean);
 }
 
 .miss
 {
-    background-color: lightblue;
+    background-color: var(--puddle);
 }
 
 .hit
 {
-    background-color: red;
+    background-color: #a80d1a;
 }
