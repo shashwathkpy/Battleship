@@ -133,8 +133,8 @@ function battleShip()
         else
             boardDiv.id = '2';
         boardDiv.classList.add('board');
-        const body = document.querySelector('body');
-        body.appendChild(boardDiv);
+        const boardArea = document.querySelector('#boardArea');
+        boardArea.appendChild(boardDiv);
         let previousHit = null;
         let shipArray = [];
 
@@ -146,7 +146,7 @@ function battleShip()
                 tile.classList.add('tile');
                 tile.id = `${i},${j},${boardDiv.id}`;
                 // tile.textContent = gb.board[i][j];
-                tile.textContent = `${i},${j}`;
+                // tile.textContent = `${i},${j}`;
                 if(gb.board[i][j] instanceof Ship)
                 {
                     tile.classList.add('ship');
@@ -160,6 +160,15 @@ function battleShip()
                 {
                     tile.classList.add('computerTile');
 
+                    tile.onmouseenter = function ()
+                    {
+                        this.classList.add('shootHover');
+                    }
+                    tile.onmouseleave = function ()
+                    {
+                        this.classList.remove('shootHover');
+                    }
+
                     tile.onclick = function ()
                     {
                         const playerAttack = player.attack([i,j]);
@@ -170,20 +179,19 @@ function battleShip()
                         }
                         if(playerAttack)
                         {
-                            this.style.backgroundColor = 'red';
+                            this.classList.add('hit');
                             instruction.textContent = 'You hit an enemy ship, shoot again!';
                         }
                         else
                         {   
                             instruction.textContent = 'Shoot an enemy tile.'
-                            this.style.backgroundColor = 'lightblue';
+                            this.classList.add('miss');
                             const playerTiles = document.querySelectorAll('.playerTile');
                             let lastShot = true;
                             let smartHit = false;
                             while(lastShot)
                             {
                                 let shot = computer.possibleAttacks.pop();
-                                // console.log(computer.possibleAttacks);
                                 let computerHit = computer.attack(shot);
                                 while(computerHit == 'alreadyHit')
                                 {
@@ -192,20 +200,12 @@ function battleShip()
                                 playerTiles.forEach(tile => {
                                     const idArray = tile.id.split(',');
                                     const coord = [parseInt(idArray[0]), parseInt(idArray[1])];
-                                    for(let i = 0; i < playerBoard.misses.length; i++)
-                                    {
-                                        
-                                        if(coord == playerBoard.misses[i])
-                                        {
-                                            console.log('yoo ' +coord + ' '  +playerBoard.misses[i]);
-                                            tile.style.backgroundColor = 'lightblue';
-                                        }
-                                    }
                                     if(coord == computer.attackedCoord.toString())
                                     {
                                         if(computerHit)
                                         {
-                                            tile.style.backgroundColor = 'red';
+                                            console.log(coord);
+                                            tile.classList.add('hit');
                                             let currentShip = playerBoard.board[idArray[0]][idArray[1]];
                                             console.log(currentShip);
                                             shipArray.push([coord[0], coord[1]]);
@@ -250,41 +250,18 @@ function battleShip()
                                                     console.log("Ship Array:" + shipArray[i][0]);
                                                     playerBoard.justSunk = true;
                                                     playerBoard.getAdjacent(shipArray[i][0], shipArray[i][1]);
-                                                    // console.log(ship);
                                                 }
-                                                // const misses = playerBoard.misses;
-                                                // console.log('misses: ' + playerBoard.misses)
-                                                // for(let i = 0; i < misses.length; i++)
-                                                // {
-                                                    // computer.attack(misses[i]);
-                                                    // const playerTilesforMisses = document.querySelectorAll('.playerTile');
-                                                    // playerTilesforMisses.forEach(tile => {
-                                                    //     const iDs = tile.id.split(',');
-                                                    //     const slot = [parseInt(iDs[0]), parseInt(iDs[1])];
-                                                    //     if(slot == computer.attackedCoord.toString())
-                                                    //     {
-                                                    //         if(ti)
-                                                    //         tile.style.backgroundColor = 'lightblue';
-                                                    //     }
-                                                    // });
-                                                   
-
-                                                // }
-                                                // let invalidAttacks = playerBoard.getAdjacent();
-                                                // console.log(playerBoard.board);
-                                                shipArray = [];
                                             }
                                         }
                                         else
                                         {
-                                            tile.style.backgroundColor = 'lightblue';
+                                            tile.classList.add('miss');
                                             lastShot = false;
                                         }
                                     }
                                 });
                             }
                         }
-                        
                         
                         if(playerBoard.allSunk() || computerBoard.allSunk())
                         {
@@ -296,7 +273,16 @@ function battleShip()
                             computerTiles.forEach(tile => {
                                 tile.onclick = null;
                                 tile.classList.remove('computerTile');
+                                tile.onmouseenter = null;
                             });
+                            const restartBtn = document.createElement('button');
+                            restartBtn.textContent = 'Restart';
+                            body.appendChild(restartBtn);
+                            restartBtn.onclick = function ()
+                            {
+                                restart();
+                                body.removeChild(restartBtn);
+                            }
                         }
                     };
                 }
@@ -310,6 +296,14 @@ function battleShip()
     }
 }
 battleShip();
+
+function restart()
+{
+    const boardArea = document.querySelector('#boardArea');
+    while(boardArea.childNodes.length > 0)
+        boardArea.removeChild(boardArea.lastChild);
+    battleShip();
+}
 
 
 // computer attack new strat

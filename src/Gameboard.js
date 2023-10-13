@@ -6,7 +6,6 @@ class Gameboard
     {
         this.board = this.buildGrid();
         this.attacks = [];
-        this.misses = [];
         this.justSunk = false;
     }
 
@@ -107,7 +106,7 @@ class Gameboard
             if(!(this.board[i][j - 1] instanceof Ship))
                 this.board[i][j - 1] = 1;
             if(this.justSunk)
-                this.misses.push([i, j - 1]);
+                this.attacks.push([i, j - 1]);
         }
 
         // top left
@@ -115,7 +114,7 @@ class Gameboard
         {
             this.board[i - 1][j - 1] = 1;
             if(this.justSunk)
-                this.misses.push([i - 1, j - 1]);
+                this.attacks.push([i - 1, j - 1]);
         }
 
         // top
@@ -125,7 +124,7 @@ class Gameboard
             if(!(this.board[i - 1][j] instanceof Ship))
                 this.board[i - 1][j] = 1;
             if(this.justSunk)
-                this.misses.push([i - 1, j]);
+                this.attacks.push([i - 1, j]);
         }
 
         // top right
@@ -133,7 +132,7 @@ class Gameboard
         {
             this.board[i - 1][j + 1] = 1;
             if(this.justSunk)
-                this.misses.push([i - 1, j + 1]);
+                this.attacks.push([i - 1, j + 1]);
         }
         // right
         if(this.validPos(i, j + 1, n, m)) 
@@ -142,7 +141,7 @@ class Gameboard
             if(!(this.board[i][j + 1] instanceof Ship))
                 this.board[i][j + 1] = 1;
             if(this.justSunk)
-                this.misses.push([i, j + 1]);
+                this.attacks.push([i, j + 1]);
         }
 
         // bottom right
@@ -150,7 +149,7 @@ class Gameboard
         {
             this.board[i + 1][j + 1] = 1;
             if(this.justSunk)
-                this.misses.push([i + 1, j + 1]);
+                this.attacks.push([i + 1, j + 1]);
         }
 
         // bottom
@@ -160,7 +159,7 @@ class Gameboard
             if(!(this.board[i + 1][j] instanceof Ship))
                 this.board[i + 1][j] = 1;
             if(this.justSunk)
-                this.misses.push([i + 1, j]);
+                this.attacks.push([i + 1, j]);
         }
 
         // bottom left
@@ -168,7 +167,7 @@ class Gameboard
         {
             this.board[i + 1][j - 1] = 1;
             if(this.justSunk)
-                this.misses.push([i + 1, j - 1]);
+                this.attacks.push([i + 1, j - 1]);
         }
 
         this.justSunk = false;
@@ -193,7 +192,6 @@ class Gameboard
         }
         else
         {
-            // this.misses.push(coord);
             return false;
         }
     }

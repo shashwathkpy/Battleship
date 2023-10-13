@@ -1,7 +1,12 @@
 
 body
 {
-    text-align: center;
+    /* text-align: center; */
+}
+
+#boardArea
+{
+    display: flex;
 }
 
 .board 
@@ -23,13 +28,7 @@ body
     cursor:pointer;
 }
 
-/* .placementTile:hover
-{
-    background-color: gray;
-    cursor: crosshair;
-} */
-
-.computerTile:hover
+.shootHover
 {
     background-color: yellow;
     cursor: crosshair;
@@ -43,4 +42,14 @@ body
 .playerShip
 {
     background-color: green;
+}
+
+.miss
+{
+    background-color: lightblue;
+}
+
+.hit
+{
+    background-color: red;
 }

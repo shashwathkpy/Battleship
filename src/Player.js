@@ -1,5 +1,3 @@
-import Gameboard from "./Gameboard";
-
 
 class Player
 {
@@ -21,10 +19,7 @@ class Player
             }
         }
 
-        for (let i = attacks.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [attacks[i], attacks[j]] = [attacks[j], attacks[i]];
-        }
+        attacks = this.scramble(attacks);
         return attacks;
     }
 
@@ -34,13 +29,6 @@ class Player
         return this.enemyBoard.recieveAttack(coord);
     }
 
-    // randomAttack(coord)
-    // {
-    //     // const coord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
-    //     this.attackedCoord = coord;
-    //     return this.enemyBoard.recieveAttack(coord);
-    // }
-
     smartAttack(prevAttack, direction)
     {
         // computer smart attacks
@@ -49,6 +37,8 @@ class Player
         // when ship is sunk make a random move again till next ship hit
 
         let adjacentAttacks = this.enemyBoard.getAdjacent(prevAttack[0], prevAttack[1]);
+        adjacentAttacks = this.scramble(adjacentAttacks);
+
         let smartAttacks = [];
         if(direction == 'horizontal')
         {
@@ -88,10 +78,17 @@ class Player
             }
             return adjacentAttacks.length;
         }
-
     }
 
-
+    scramble(array)
+    {
+        for (let i = array.length - 1; i > 0; i--) 
+        {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 }
 
 export default Player;
