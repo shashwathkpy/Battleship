@@ -1,6 +1,7 @@
 # Battleship
 The Odin Project: JavaScript Course: Battleship
 
+Latest Update: New color palette, background image
 
 Computer's Attack Strategy:
 create a stack in random order of all possible attacks

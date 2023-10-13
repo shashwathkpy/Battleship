@@ -186,7 +186,7 @@ function battleShip()
                             instruction.textContent = 'You hit an enemy ship, shoot again!';
                         }
                         else
-                        {   
+                        {
                             instruction.textContent = 'Shoot an enemy tile.'
                             this.classList.add('miss');
                             const playerTiles = document.querySelectorAll('.playerTile');
@@ -196,6 +196,7 @@ function battleShip()
                             {
                                 let shot = computer.possibleAttacks.pop();
                                 let computerHit = computer.attack(shot);
+
                                 while(computerHit == 'alreadyHit')
                                 {
                                     computerHit = computer.attack(computer.possibleAttacks.pop());
@@ -209,6 +210,7 @@ function battleShip()
                                         {
                                             console.log(coord);
                                             tile.classList.add('hit');
+                                            
                                             let currentShip = playerBoard.board[idArray[0]][idArray[1]];
                                             console.log(currentShip);
                                             shipArray.push([coord[0], coord[1]]);
