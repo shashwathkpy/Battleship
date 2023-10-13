@@ -1,25 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
+
 
 body
 {
-    /* text-align: center; */
+    text-align: center;
+    font-family: 'Pixelify Sans', sans-serif;
+    background-color: lightgreen;
+}
+
+h1
+{
+    font-size: 75px;
+}
+
+h2
+{
+    font-size: 40px;
+}
+
+button
+{
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 25px;
+    padding: 10px;
+    border-radius: 20px;
 }
 
 #boardArea
 {
     display: flex;
+    justify-content: center;
 }
 
 .board 
 {
     display: grid;
-    grid-template-columns: repeat(10, 50px);
+    grid-template-columns: repeat(10, 30px);
     padding: 10px;
 }
 
 .tile
 {
     border: solid 1px black;
-    height: 50px;
+    height: 30px;
+    background-color: white;
 }
 
 .placementTile
@@ -36,7 +60,7 @@ body
 
 .ship
 {
-    background-color: orange;
+    /* background-color: orange; */
 }
 
 .playerShip

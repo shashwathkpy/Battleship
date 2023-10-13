@@ -8,14 +8,15 @@ function battleShip()
     const playerBoard = new Gameboard();
     const computerBoard = new Gameboard();
 
-    for(let i = 5; i > 0; i--)
+    let cpuShips = [5,4,3,3,2];
+    for(let i = 0; i < cpuShips.length; i++)
     {
         let placed = false;
         while(!placed)
         {
             const coord = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
             let rotate = Math.random() < 0.5;
-            placed = computerBoard.placeShip(coord, rotate, i);
+            placed = computerBoard.placeShip(coord, rotate, cpuShips[i]);
         }
     }
 
@@ -25,11 +26,13 @@ function battleShip()
     const playerBoardDiv = document.createElement('div');
     playerBoardDiv.classList.add('board');
     const body = document.querySelector('body');
-    body.appendChild(playerBoardDiv);
+    const boardArea = document.querySelector('#boardArea');
+    boardArea.appendChild(playerBoardDiv);
 
-    let shipLength = 5;
+    let shipSizes = [5,4,3,3,2,0];
+    let shipLength = shipSizes.shift();
     const rotateBtn = document.createElement('button');
-    rotateBtn.textContent = 'Rotate';
+    rotateBtn.textContent = 'ROTATE';
     rotateBtn.id = 'rotateBtn';
     body.appendChild(rotateBtn);
 
@@ -54,7 +57,7 @@ function battleShip()
                 const idArray = this.id.split(',');
                 if(playerBoard.placeShip([parseInt(idArray[0]), parseInt(idArray[1])], vertical, shipLength))
                 {
-                    shipLength -= 1;
+                    shipLength = shipSizes.shift();
                     //update board
                     for(let i = 0; i < 10; i++)
                     {
@@ -70,7 +73,7 @@ function battleShip()
                     }
                 }
 
-                if(shipLength == 0)
+                if(shipSizes.length == 0)
                 {
                     const tiles = document.querySelectorAll('.tile');
                     tiles.forEach(tile => {
@@ -78,7 +81,7 @@ function battleShip()
                         tile.onmouseenter = null;
                         tile.onmouseleave = null;
                     });
-                    body.removeChild(playerBoardDiv);
+                    boardArea.removeChild(playerBoardDiv);
                     body.removeChild(rotateBtn);
                     setupBoard(playerBoard);
                     setupBoard(computerBoard);
@@ -133,7 +136,6 @@ function battleShip()
         else
             boardDiv.id = '2';
         boardDiv.classList.add('board');
-        const boardArea = document.querySelector('#boardArea');
         boardArea.appendChild(boardDiv);
         let previousHit = null;
         let shipArray = [];
@@ -276,7 +278,7 @@ function battleShip()
                                 tile.onmouseenter = null;
                             });
                             const restartBtn = document.createElement('button');
-                            restartBtn.textContent = 'Restart';
+                            restartBtn.textContent = 'RESTART';
                             body.appendChild(restartBtn);
                             restartBtn.onclick = function ()
                             {
